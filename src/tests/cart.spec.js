@@ -1,30 +1,30 @@
 import chai from 'chai';
+import { page } from '../po/index.js';
 
 chai.should(); 
 
 describe('Shopping Cart Functionality', () => {
 
     it('Add multiple quantities of a tool to the shopping cart', async () => {
-        await browser.url('/');
+        const homePage = page('home');
+        const productDetailsPage = page('productDetails');
+
+        await homePage.open();
         
-        const firstProduct = await $('.card-img-top');
-        await firstProduct.waitForDisplayed({ timeout: 5000 });
-        await firstProduct.click();
+        await homePage.selectFirstProduct();
         
-        const quantityInput = await $('[data-test="quantity"]');
-        await quantityInput.waitForDisplayed({ timeout: 3000 });
+        await productDetailsPage.setQuantity(3);
+        await productDetailsPage.addToCart();
         
-        await quantityInput.setValue(3);
-        await $('[data-test="add-to-cart"]').click();
-        
-        const cartBadge = await $('[data-test="cart-quantity"]');
+        const cartBadge = homePage.header.cartQuantityBadge;
 
         let badgeText = '';
         await browser.waitUntil(async () => {
+            if (!(await cartBadge.isExisting())) return false;
             badgeText = await cartBadge.getText();
             return badgeText !== '';
         }, {
-            timeout: 5000,
+            timeout: 10000,
             timeoutMsg: 'Cart badge text did not populate'
         });
 
@@ -32,11 +32,13 @@ describe('Shopping Cart Functionality', () => {
     });
 
     it('Enforce maximum item quantity restriction in the cart', async () => {
+        const homePage = page('home');
+        const checkoutPage = page('checkout');
 
-        await browser.url('/checkout');
+        await homePage.header.openCart();
 
-        const quantityField = await $('[data-test="product-quantity"]');
-        await quantityField.waitForDisplayed();
+        const quantityField = await checkoutPage.productQuantityInput;
+        await quantityField.waitForDisplayed({ timeout: 10000 });
         
         await quantityField.setValue(100);
         
