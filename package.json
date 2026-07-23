@@ -4,8 +4,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "wdio": "wdio run ./wdio.conf.cjs"
+    "test": "npm run wdio",
+    "wdio": "wdio run ./src/configs/wdio.conf.cjs"
   },
   "keywords": [],
   "author": "",

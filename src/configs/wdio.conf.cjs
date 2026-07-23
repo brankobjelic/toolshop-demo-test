@@ -21,7 +21,7 @@ exports.config = {
     // of the config file unless it's absolute.
     //
     specs: [
-        './test/specs/**/*.spec.js'
+        '../tests/**/*.spec.js'
     ],
     // Patterns to exclude.
     exclude: [
@@ -43,14 +43,23 @@ exports.config = {
     // and 30 processes will get spawned. The property handles how many capabilities
     // from the same test should run tests.
     //
-    maxInstances: 10,
+    maxInstances: 1,
     //
     // If you have trouble getting all important capabilities together, check out the
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
     capabilities: [{
-        browserName: 'chrome'
+        browserName: 'chrome',
+        'goog:chromeOptions': {
+            args: [
+                '--disable-logging',   // Disables Chrome's internal diagnostic logging
+                '--log-level=3',       // Restricts logs to fatal errors only (0=info, 1=warning, 2=error, 3=fatal)
+                //'--headless',
+                //'--window-size=1920,1080', // Forces a reliable desktop screen resolution
+                //'--disable-gpu'
+            ]
+        }
     }],
 
     //
@@ -109,7 +118,7 @@ exports.config = {
     // Make sure you have the wdio adapter package for the specific framework installed
     // before running any tests.
     framework: 'mocha',
-    
+
     //
     // The number of times to retry the entire specfile when it fails as a whole
     // specFileRetries: 1,
